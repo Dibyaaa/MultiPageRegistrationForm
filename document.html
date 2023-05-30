@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+ -->
+    <meta charset="ISO-8859-1">
+    <title>Document</title>
+
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-4 px-4 py-2 w-75" style="background-color: #ebf6fc;">
+        <!-- <div class="content py-1 m-auto"> -->
+
+        <form class="form-group" method="post" action="saveRegistrationDetails" id="registrationForm"
+            enctype="multipart/form-data">
+
+            <div class="row">
+
+                <lable class="font-weight-bold">Recent passport size
+                    photograph (image size less than 4MB)<sup class="text-danger">*</sup></lable>
+                <input type="file" name="passportImage" id="passportImageId" class="form-control w-25">
+
+            </div>
+
+            <div class="row mt-3">
+
+                <lable class="font-weight-bold">HSC mark sheet (image, PDF
+                    or docs size less than 4MB) <sup class="text-danger">*</sup></lable>
+                <input type="file" name="hscMarkSheet" id="hscMarkSheetId" class="form-control w-25">
+
+            </div>
+
+            <div class="row mt-3">
+
+                <lable class="font-weight-bold">SSC mark sheet (image, PDF
+                    or docs size less than 4MB) <sup class="text-danger">*</sup></lable>
+                <input type="file" name="sscMarkSheet" id="sscMarkSheetId" class="form-control w-25">
+
+            </div>
+
+            <div class="row mt-3">
+                <lable class="font-weight-bold">All semesters mark sheet in
+                    a single PDF or docs (file size less than 10MB)<sup class="text-danger">*</sup></lable>
+                <input type="file" name="allSemMarkSheet" id="allSemMarkSheetId" class="form-control w-25">
+            </div>
+
+            <div class="row mt-3">
+
+
+                <div class="text-center">
+                    <a href="basicInformation.html" class="btn btn-success" id="submitId">Submit</a>
+
+                </div>
+
+            </div>
+
+
+
+        </form>
+    </div>
+    <!-- </div> -->
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var obj = window.sessionStorage.getItem('basicInformation');
+
+
+    });
+    var document = {};
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        if (evt.keyCode === 45) {  //For negetive symbol
+            return false;
+        }
+        return true;
+    }
+    $('#submitId').on("click", function () {
+
+        // debugger;
+        var passportImage = $("#passportImageId").val();
+        var hscMarkSheet = $("#hscMarkSheetId").val();
+        var sscMarkSheet = $("#sscMarkSheetId").val();
+
+        var allSemMarkSheet = $("#allSemMarkSheetId").val();
+
+        if (passportImage == "") {
+            swal("Error", "Please Upload Passport Image", "error");
+            $("#passportImageId").focus();
+            return false;
+        } else if (hscMarkSheet == "") {
+            swal("Error", "Please Upload HSC MarkSheet", "error");
+            $("#hscMarkSheetId").focus();
+            return false;
+        } else if (sscMarkSheet == "") {
+            swal("Error", "Please Upload SSC MarkSheet", "error");
+            $("#sscMarkSheetId").focus();
+            return false;
+
+        } else if (allSemMarkSheet == "") {
+            swal("Error", "Please Upload All Semester Mark Sheet", "error");
+            $("#allSemMarkSheetId").focus();
+            return false;
+
+        } else {
+
+
+             var obj = window.localStorage.getItem('basicInformation');
+             var basicInformation = JSON.parse(obj);
+             basicInformation.document = document;
+             window.localStorage.setItem("basicInformation", JSON.stringify(basicInformation));
+            alert('Registration Successful');
+           
+
+
+
+        }
+
+
+    });
+
+    $('#passportImageId').bind('change', function () {
+
+        var fileInput = document.getElementById('passportImageId');
+        //var fileInput = $('#passportImageId').val();
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        //this.files[0].size gets the size of your file.
+
+        if (!allowedExtensions.exec(filePath)) {
+            swal('Please upload file having extensions .jpeg/.jpg/.png/.gif only.');
+            fileInput.value = '';
+            $("#passportImageId").focus();
+            return false;
+        }
+        if (checkSize(this.files[0].size)) {
+            swal({
+                title: "Please upload image Size less than 4MB. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#passportImageId").focus();
+            return false;
+
+        }
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            document.passportImage = reader.result
+
+        })
+        reader.readAsDataURL(this.files[0]);
+
+
+    });
+    $('#hscMarkSheetId').bind('change', function () {
+
+        var fileInput = document.getElementById('hscMarkSheetId');
+        //var fileInput = $('#passportImageId').val();
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif|\.pdf|\.doc)$/i;
+        //this.files[0].size gets the size of your file.
+        if (!allowedExtensions.exec(filePath)) {
+            swal({
+                title: "Please upload file having extensions .jpeg/.jpg/.png/.gif/.pdf/.doc only. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#hscMarkSheetId").focus();
+            return false;
+        }
+        if (checkSize(this.files[0].size)) {
+            swal({
+                title: "Please upload document size less than 4MB. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#hscMarkSheetId").focus();
+            return false;
+
+        }
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            document.hscMarkSheetId = reader.result
+
+        })
+        reader.readAsDataURL(this.files[0]);
+
+    });
+    $('#sscMarkSheetId').bind('change', function () {
+        // debugger;
+        var fileInput = document.getElementById('sscMarkSheetId');
+        //var fileInput = $('#passportImageId').val();
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif|\.pdf|\.doc)$/i;
+        //this.files[0].size gets the size of your file.
+
+        if (!allowedExtensions.exec(filePath)) {
+            swal({
+                title: "Please upload file having extensions .jpeg/.jpg/.png/.gif/.pdf/.doc only. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#sscMarkSheetId").focus();
+            return false;
+        }
+        if (checkSize(this.files[0].size)) {
+            swal({
+                title: "Please upload marksheet size less than 4MB. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#sscMarkSheetId").focus();
+            return false;
+
+        }
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            document.sscMarkSheet = reader.result
+
+        })
+        reader.readAsDataURL(this.files[0]);
+
+
+    });
+    $('#allSemMarkSheetId').bind('change', function () {
+
+        var fileInput = document.getElementById('allSemMarkSheetId');
+        //var fileInput = $('#passportImageId').val();
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.pdf|\.doc)$/i;
+        //this.files[0].size gets the size of your file.
+
+        if (!allowedExtensions.exec(filePath)) {
+            swal({
+                title: "Please upload file having extensions .pdf/.doc only. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#allSemMarkSheetId").focus();
+            return false;
+        }
+        if (checkBiggerSize(this.files[0].size)) {
+            swal({
+                title: "Please upload marksheet size less than 10MB. !!",
+                icon: "info",
+                button: "OK",
+            });
+            fileInput.value = '';
+            $("#allSemMarkSheetId").focus();
+            return false;
+
+        }
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            document.allSemMarkSheet = reader.result
+
+        })
+        reader.readAsDataURL(this.files[0]);
+
+    });
+    // for 4 MB
+    function checkSize(fileSize) {
+        var size = 4194304;
+
+        if (fileSize > size) {
+            return true;
+        }
+
+    }
+    // for 10 MB
+    function checkBiggerSize(fileSize) {
+        var size = 10485760;
+
+        if (fileSize > size) {
+            return true;
+        }
+
+    }
+</script>
+
+</html>
